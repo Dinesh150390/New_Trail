@@ -1,0 +1,298 @@
+<%@ Page Title="" Language="C#" MasterPageFile="~/Administrator.master" AutoEventWireup="true"
+    CodeFile="Admin_Winners.aspx.cs" Inherits="Admin_Winners" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="SchoolMaster" runat="Server">
+    <div class="grid_3 grid_5">
+        <asp:ScriptManager runat="server" ID="ScriptManager5" />
+        <h3>
+            Winner List Informtions</h3>
+        <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+            <ul id="myTab" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#Student_Details" id="home-tab" role="tab"
+                    data-toggle="tab" aria-controls="home" aria-expanded="true">Description</a></li>
+                <li role="presentation" class=""><a href="#Shcool_Details" role="tab" id="profile-tab"
+                    data-toggle="tab" aria-controls="profile" aria-expanded="false">View Winners List</a></li>
+            </ul>
+            <!-- Student Details-->
+            <div id="myTabContent" class="tab-content">
+                <div>
+                    <div role="tabpanel" class="tab-pane fade active in" id="Student_Details" aria-labelledby="home-tab">
+                        <p>
+                            Here Your can upload the winners list --- > Use the right tab
+                        </p>
+                    </div>
+                    <!-- School Details-->
+                    <div role="tabpanel" class="tab-pane fade " id="Shcool_Details" aria-labelledby="profile-tab">
+                        <!-- Placing GridView in UpdatePanel-->
+                        <asp:UpdatePanel ID="upCrudGrid" runat="server">
+                            <ContentTemplate>
+                                <asp:GridView ID="grdNewEvent" runat="server" Width="940px" HorizontalAlign="Center"
+                                    OnRowCommand="GridView1_RowCommand" AutoGenerateColumns="false" AllowPaging="true"
+                                    DataKeyNames="Student_Name" CssClass="table table-hover table-striped">
+                                    <Columns>
+                                        <asp:ButtonField CommandName="detail" ControlStyle-CssClass="btn btn-info" ButtonType="Button"
+                                            Text="Detail" HeaderText="Detailed View">
+                                            <ControlStyle CssClass="btn btn-info"></ControlStyle>
+                                        </asp:ButtonField>
+                                        <asp:ButtonField CommandName="editRecord" ControlStyle-CssClass="btn btn-info" ButtonType="Button"
+                                            Text="Edit" HeaderText="Edit Record">
+                                            <ControlStyle CssClass="btn btn-info"></ControlStyle>
+                                        </asp:ButtonField>
+                                        <asp:ButtonField CommandName="deleteRecord" ControlStyle-CssClass="btn btn-info"
+                                            ButtonType="Button" Text="Delete" HeaderText="Delete Record">
+                                            <ControlStyle CssClass="btn btn-info"></ControlStyle>
+                                        </asp:ButtonField>
+                                        <asp:BoundField DataField="Winners_ID" HeaderText="Winner ID" />
+                                        <asp:BoundField DataField="Event_Date" HeaderText="Date of the Event" />
+                                        <asp:BoundField DataField="Event_Name" HeaderText="Name of the Event" />
+                                        <asp:BoundField DataField="Category" HeaderText="Student Category" />
+                                        <asp:BoundField DataField="Student_Name" HeaderText="Student Name" />
+                                        <asp:BoundField DataField="School_Name" HeaderText="School Name" />
+                                        <asp:BoundField DataField="Prize" HeaderText="Prize Award" />
+                                    </Columns>
+                                </asp:GridView>
+                                <asp:Button ID="btnAdd" runat="server" Text="Add New Record" CssClass="btn btn-info"
+                                    OnClick="btnAdd_Click" />
+                            </ContentTemplate>
+                            <Triggers>
+                            </Triggers>
+                        </asp:UpdatePanel>
+                        <!-- Detail Modal Starts here-->
+                        <div id="detailModal" class="form-feed modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    ×</button>
+                                <h3 id="myModalLabel">
+                                    Detailed View</h3>
+                            </div>
+                            <div class="modal-body">
+                                <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+                                    <ContentTemplate>
+                                        <asp:DetailsView ID="DetailsView1" runat="server" CssClass="table table-bordered table-hover"
+                                            BackColor="White" ForeColor="Black" FieldHeaderStyle-Wrap="false" FieldHeaderStyle-Font-Bold="true"
+                                            FieldHeaderStyle-BackColor="LavenderBlush" FieldHeaderStyle-ForeColor="Black"
+                                            BorderStyle="Groove" AutoGenerateRows="False">
+                                            <Fields>
+                                                <asp:BoundField DataField="Winners_ID" HeaderText="Winner ID" />
+                                                <asp:BoundField DataField="Winners_ID" HeaderText="Winner ID" />
+                                                <asp:BoundField DataField="Event_Date" HeaderText="Date of the Event" />
+                                                <asp:BoundField DataField="Event_Name" HeaderText="Name of the Event" />
+                                                <asp:BoundField DataField="Category" HeaderText="Student Category" />
+                                                <asp:BoundField DataField="Student_Name" HeaderText="Student Name" />
+                                                <asp:BoundField DataField="School_Name" HeaderText="School Name" />
+                                                <asp:BoundField DataField="Prize" HeaderText="Prize Award" />
+                                            </Fields>
+                                        </asp:DetailsView>
+                                    </ContentTemplate>
+                                    <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="grdNewEvent" EventName="RowCommand" />
+                                        <asp:AsyncPostBackTrigger ControlID="btnAdd" EventName="Click" />
+                                    </Triggers>
+                                </asp:UpdatePanel>
+                                <div class="modal-footer">
+                                    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+                                        Close</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Detail Modal Ends here -->
+                        <!-- Edit Modal Starts here -->
+                        <div id="editModal" class="form-feed modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    ×</button>
+                                <h3 id="editModalLabel">
+                                    Edit Record</h3>
+                            </div>
+                            <asp:UpdatePanel ID="upEdit" runat="server">
+                                <ContentTemplate>
+                                    <div class="modal-body">
+                                        <table class="table table-bordered table-hover">
+                                            <tr>
+                                                <td>
+                                                    Winner ID :<br />
+                                                    <asp:Label ID="lblEditWiinerID" runat="server"></asp:Label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Select Event Date :<br />
+                                                    <asp:DropDownList ID="drpEditEventDate" runat="server" Width="300px" Height="30px"
+                                                        AutoPostBack="true" OnSelectedIndexChanged="drpAddEventDate_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Select Name of the Event:<br />
+                                                    <asp:DropDownList ID="drpEditEventName" runat="server" Width="300px" Height="30px">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Choose Category :<br />
+                                                    <asp:DropDownList ID="drpEditCategoryLevel" runat="server" Width="300px" Height="30px"
+                                                        AutoPostBack="true" OnSelectedIndexChanged="drpADDCategoryLevel_SelectedIndexChanged">
+                                                        <asp:ListItem Selected="True" Text="Choose Student Standard"> </asp:ListItem>
+                                                        <asp:ListItem Text="Standard : 1-5 (Primary Education)"> </asp:ListItem>
+                                                        <asp:ListItem Text="Standard : 6-8 (Secondary Education)"> </asp:ListItem>
+                                                        <asp:ListItem Text="Standard : 9-12 (Higher Secondary Education)"> </asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Select Student Name :<br />
+                                                    <asp:DropDownList ID="drpEditStudentName" runat="server" Width="300px" Height="30px">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Student Standard:<br />
+                                                    <asp:TextBox ID="txtEditStudentStandard" runat="server" Width="300px" Height="30px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Student School :<br />
+                                                    <asp:TextBox ID="txtEditStudentSchool" runat="server" Width="300px" Height="30px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Prize Reward :<br />
+                                                    <asp:TextBox ID="txtEditPrize" runat="server" Width="300px" Height="30px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <asp:Label ID="lblResult" Visible="false" runat="server"></asp:Label>
+                                        <asp:Button ID="btnSave" runat="server" Text="Update" CssClass="btn btn-info" OnClick="btnSave_Click" />
+                                        <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+                                            Close</button>
+                                    </div>
+                                </ContentTemplate>
+                                <Triggers>
+                                    <asp:AsyncPostBackTrigger ControlID="grdNewEvent" EventName="RowCommand" />
+                                    <asp:AsyncPostBackTrigger ControlID="btnSave" EventName="Click" />
+                                </Triggers>
+                            </asp:UpdatePanel>
+                        </div>
+                        <!-- Edit Modal Ends here -->
+                        <!-- Add Record Modal Starts here-->
+                        <div id="addModal" class="form-feed modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    ×</button>
+                                <h3 id="addModalLabel">
+                                    Add New Record</h3>
+                            </div>
+                            <asp:UpdatePanel ID="upAdd" runat="server">
+                                <ContentTemplate>
+                                    <div class="modal-body">
+                                        <table class="table table-bordered table-hover">
+                                            <tr>
+                                                <td>
+                                                    Select Event Date :<br />
+                                                    <asp:DropDownList ID="drpAddEventDate" runat="server" Width="300px" Height="30px"
+                                                        AutoPostBack="true" OnSelectedIndexChanged="drpAddEventDate_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Select Name of the Event:<br />
+                                                    <asp:DropDownList ID="drpAddEventName" runat="server" Width="300px" Height="30px">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Choose Category :<br />
+                                                    <asp:DropDownList ID="drpADDCategoryLevel" runat="server" Width="300px" Height="30px"
+                                                        AutoPostBack="true" OnSelectedIndexChanged="drpADDCategoryLevel_SelectedIndexChanged">
+                                                        <asp:ListItem Selected="True" Text="Choose Student Standard"> </asp:ListItem>
+                                                        <asp:ListItem Text="Standard : 1-5 (Primary Education)"> </asp:ListItem>
+                                                        <asp:ListItem Text="Standard : 6-8 (Secondary Education)"> </asp:ListItem>
+                                                        <asp:ListItem Text="Standard : 9-12 (Higher Secondary Education)"> </asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Select Student Name :<br />
+                                                    <asp:DropDownList ID="drpAddStudentName" runat="server" Width="300px" Height="30px">
+                                                    </asp:DropDownList>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Student Standard:<br />
+                                                    <asp:TextBox ID="txtAddStudentStandard" runat="server" Width="300px" Height="30px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Student School :<br />
+                                                    <asp:TextBox ID="txtAddStudentSchool" runat="server" Width="300px" Height="30px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Prize Reward :<br />
+                                                    <asp:TextBox ID="txtAddPrizeReward" runat="server" Width="300px" Height="30px"></asp:TextBox>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                          <asp:Button ID="btnAddRecord" runat="server" Text="Add" CssClass="btn btn-info" OnClick="btnAddRecord_Click" />
+                                        <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+                                            Close</button>
+                                    </div>
+                                </ContentTemplate>
+                                <Triggers>
+                                        <asp:AsyncPostBackTrigger ControlID="btnAddRecord" EventName="Click" />
+                                </Triggers>
+                            </asp:UpdatePanel>
+                        </div>
+                        <!--Add Record Modal Ends here-->
+                        <!-- Delete Record Modal Starts here-->
+                        <div id="deleteModal" class="form-feed modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    ×</button>
+                                <h3 id="delModalLabel">
+                                    Delete Record</h3>
+                            </div>
+                            <asp:UpdatePanel ID="upDel" runat="server">
+                                <ContentTemplate>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete the record?
+                                        <asp:HiddenField ID="hfCode" runat="server" />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <asp:Button ID="btnDelete" runat="server" Text="Delete" CssClass="btn btn-info" OnClick="btnDelete_Click" />
+                                        <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">
+                                            Cancel</button>
+                                    </div>
+                                </ContentTemplate>
+                                <Triggers>
+                                     <asp:AsyncPostBackTrigger ControlID="btnDelete" EventName="Click" />
+                                </Triggers>
+                            </asp:UpdatePanel>
+                        </div>
+                        <!--Delete Record Modal Ends here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</asp:Content>
